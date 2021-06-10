@@ -1,0 +1,84 @@
+---
+- hosts: routers
+  connection: local
+#  vars:
+#    nexthop: []
+  tasks:
+    - name: show Webex IP route
+      register: command_out
+      ios_command:
+#        commands: "show snmp host  | include Notification host"
+        commands: "show run | inc \\.[0-9]+[ ]+name"
+#        provider: "{{ credentials }}"
+
+    - name: extract values
+      set_fact:
+       nexthop: "{{item.split()[4]}}"
+      with_items: "{{command_out.stdout[0]}}"
+
+    - name: Update webex IP route
+      ios_config:
+       lines:       
+       - no ip route 13.70.151.216 255.255.255.255 {{ nexthop }}  name Webex
+       - no ip route 13.71.127.197 255.255.255.255 {{ nexthop }}  name Webex
+       - no ip route 13.72.245.115 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 13.73.1.120 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 13.75.126.169 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 13.89.240.113 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 13.107.3.0 255.255.255.0 {{ nexthop }} name Webex
+       - no ip route 51.140.155.234 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 51.140.203.190 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 51.141.51.76 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 52.163.126.215 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 52.170.21.67 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 52.172.185.18 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 52.178.94.2 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 52.178.161.139 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 52.228.25.96 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 52.242.23.189 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 104.215.62.195 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 138.91.237.237 255.255.255.255 {{ nexthop }} name Webex
+       - no ip route 69.26.176.0 255.255.240.0 {{ nexthop }} name Webex
+       - no ip route 155.190.254.0 255.255.254.0 {{ nexthop }} name Webex
+       - ip route 52.120.0.0 255.252.0.0 {{ nexthop }} name Webex
+       - ip route 20.68.154.0 255.255.255.0 {{ nexthop }} name Webex 
+       - ip route 23.89.0.0 255.255.0.0 {{ nexthop }} name Webex 
+
+
+    - name: Update webxe ACL
+      ios_config:
+       lines:
+       - object-group network WebexSvcEndPoints
+       - no 69.26.176.0 255.255.240.0
+       - no 155.190.254.0 255.255.254.0
+       - 20.68.154.0 255.255.255.0
+       - 23.89.0.0 255.255.0.0
+       parents:
+       - object-group network WebexSvcEndPoints
+
+    - name: Update SFBO ACL
+      ios_config:
+       parents:
+       - object-group network SFBO
+       lines:
+       - no host 13.70.151.216
+       - no host 13.71.127.197
+       - no host 13.72.245.115
+       - no host 13.73.1.120
+       - no host 13.75.126.169
+       - no host 13.89.240.113
+       - no host 51.140.155.234
+       - no host 51.140.203.190
+       - no host 51.141.51.76
+       - no host 52.163.126.215
+       - no host 52.170.21.67
+       - no host 52.172.185.18
+       - no host 52.178.94.2
+       - no host 52.178.161.139
+       - no host 52.228.25.96
+       - no host 52.242.23.189
+       - no host 104.215.11.144
+       - no host 104.215.62.195
+       - no host 138.91.237.237
+       - no 13.107.3.0 255.255.255.0
+       - 52.120.0.0 255.252.0.0
