@@ -1,6 +1,6 @@
 # Playbook to clear NTP config and apply new servers
 ---
-- hosts: routers
+#- hosts: routers
 
   tasks:
   - name: Show Run on Device
