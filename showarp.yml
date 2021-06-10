@@ -11,8 +11,8 @@
 #      register: print_output
 
 #    -  debug: var=print_output.stdout_lines
-tasks:
-  - name: Show Run on Device
-    ios_command:
+  tasks:
+    - name: Show Run on Device
+      ios_command:
       commands:
         - show run
