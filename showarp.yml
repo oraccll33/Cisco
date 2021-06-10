@@ -4,10 +4,15 @@
   gather_facts: false
 
 
-  tasks:
-    - name: show arp
-      raw: "show arp"
+#  tasks:
+#    - name: show arp
+#      raw: "show arp"
 
-      register: print_output
+#      register: print_output
 
-    -  debug: var=print_output.stdout_lines
+#    -  debug: var=print_output.stdout_lines
+tasks:
+  - name: Show Run on Device
+    ios_command:
+      commands:
+        - show run
