@@ -47,14 +47,13 @@
 
     - name: Update webxe ACL
       ios_config:
-       lines:
+       parents:
        - object-group network WebexSvcEndPoints
+       lines:
        - no 69.26.176.0 255.255.240.0
        - no 155.190.254.0 255.255.254.0
        - 20.68.154.0 255.255.255.0
        - 23.89.0.0 255.255.0.0
-       parents:
-       - object-group network WebexSvcEndPoints
 
     - name: Update SFBO ACL
       ios_config:
